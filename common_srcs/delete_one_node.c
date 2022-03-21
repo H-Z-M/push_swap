@@ -6,11 +6,11 @@
 /*   By: sudatsu <sudatsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/26 07:12:19 by sudatsu           #+#    #+#             */
-/*   Updated: 2022/03/16 21:34:41 by sudatsu          ###   ########.fr       */
+/*   Updated: 2022/03/21 22:00:35 by sudatsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/checker.h"
+#include "common.h"
 
 void	free_node(t_node *node, t_stack *stack)
 {
@@ -31,7 +31,7 @@ void	free_node(t_node *node, t_stack *stack)
 		return ;
 	}
 	previous = node->prev;
-	if ( node->next != NULL)
+	if (node->next != NULL)
 		node->next->prev = previous;
 	previous->next = node->next;
 	free(node);
@@ -44,7 +44,7 @@ void	delete_one_node_idx(int idx, t_stack *stack)
 	p = stack->top;
 	while (p != NULL)
 	{
-		if( p->idx == idx)
+		if (p->idx == idx)
 		{
 			free_node(p, stack);
 			return ;
@@ -60,7 +60,7 @@ void	delete_one_node_data(int data, t_stack *stack)
 	p = stack->top;
 	while (p != NULL)
 	{
-		if( p->data == data)
+		if (p->data == data)
 		{
 			free_node(p, stack);
 			return ;

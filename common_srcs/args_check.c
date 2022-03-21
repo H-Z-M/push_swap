@@ -6,14 +6,13 @@
 /*   By: sudatsu <sudatsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/26 06:57:39 by sudatsu           #+#    #+#             */
-/*   Updated: 2022/03/17 22:15:57 by sudatsu          ###   ########.fr       */
+/*   Updated: 2022/03/21 23:16:49 by sudatsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/util.h"
-#include <stdlib.h>
+#include "common.h"
 
-void	issorted(int *args, int c)
+void	issorted(int *args, int c, bool is_push_swap)
 {
 	int	i;
 	int	j;
@@ -29,8 +28,11 @@ void	issorted(int *args, int c)
 		}
 		i++;
 	}
-	free(args);
-	exit(EXIT_FAILURE);
+	if (is_push_swap)
+	{
+		free(args);
+		exit(EXIT_FAILURE);
+	}
 }
 
 void	isoverlap(int *args, int c)
@@ -46,9 +48,8 @@ void	isoverlap(int *args, int c)
 		{
 			if (args[i] == args[j])
 			{
-				ft_putendl_fd("ERROR", STDERR_FILENO);
 				free(args);
-				exit(EXIT_FAILURE);
+				exit_error_msg("Error");
 			}
 		}
 		i++;
@@ -82,7 +83,7 @@ long	ft_accumulate(const char *s)
 	while (*s && i++ < 11)
 	{
 		if (!ft_isdigit(*s))
-			return (INVALID_ARGUMENT);
+			return (0xFFFFFFFF);
 		acc = 10 * acc + *s - '0';
 		s++;
 	}
@@ -91,7 +92,7 @@ long	ft_accumulate(const char *s)
 	return (acc);
 }
 
-int	*ft_atoi_ps(int ac, char **av)
+int	*ft_atoi_ps(int ac, char **av, bool is_push_swap)
 {
 	int		i;
 	int		*args;
@@ -108,13 +109,12 @@ int	*ft_atoi_ps(int ac, char **av)
 			args[i] = (int)acc;
 		else
 		{
-			ft_putendl_fd("ERROR", STDERR_FILENO);
 			free(args);
-			exit(EXIT_FAILURE);
+			exit_error_msg("Error");
 		}
 		i++;
 	}
 	isoverlap(args, ac);
-	issorted(args, ac);
+	issorted(args, ac, is_push_swap);
 	return (args);
 }

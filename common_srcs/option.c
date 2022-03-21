@@ -1,35 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   t_option.c                                         :+:      :+:    :+:   */
+/*   option.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sudatsu <sudatsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/10 23:36:37 by sudatsu           #+#    #+#             */
-/*   Updated: 2022/03/16 21:32:29 by sudatsu          ###   ########.fr       */
+/*   Updated: 2022/03/22 07:40:11 by sudatsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/push_swap.h"
-#include "../includes/util.h"
+#include "common.h"
 
-void	opt_delete(t_option **opt)
-{
-	t_option	*tmp;
-
-	while (*opt)
-	{
-		tmp = *opt;
-		*opt = (*opt)->next;
-		free(tmp);
-	}
-}
-
-t_option	*opt_create(t_oplist content)
+t_option	*opt_create(t_op_list content)
 {
 	t_option	*new_opt;
 
-	new_opt = (t_option *)malloc(sizeof(t_option));
+	new_opt = malloc(sizeof(t_option));
 	if (!new_opt)
 		exit_error_msg("opt_create error : malloc");
 	new_opt->content = content;
@@ -37,7 +24,7 @@ t_option	*opt_create(t_oplist content)
 	return (new_opt);
 }
 
-void	opt_addback(t_option **opt, t_oplist content)
+void	opt_addback(t_option **opt, t_op_list content)
 {
 	t_option	*ptr;
 
@@ -52,13 +39,18 @@ void	opt_addback(t_option **opt, t_oplist content)
 		*opt = opt_create(content);
 }
 
-static bool	reduce(t_option **opt, t_oplist a, t_oplist b)
+bool	reduce(t_option **opt, t_op_list a, t_op_list b)
 {
-	if ((*opt)->next!= NULL &&
-		(((*opt)->content == a && (*opt)->next->content == b) ||
-		 ((*opt)->content == b && (*opt)->next->content == a)))
+	t_option	*tmp;
+
+	if ((*opt)->next == NULL)
+		return (false);
+	if (((*opt)->content == a && (*opt)->next->content == b)
+		|| ((*opt)->content == b && (*opt)->next->content == a))
 	{
-		(*opt) = (*opt)->next;
+		tmp = (*opt)->next;
+		free(*opt);
+		*opt = tmp;
 		return (true);
 	}
 	return (false);
@@ -66,11 +58,14 @@ static bool	reduce(t_option **opt, t_oplist a, t_oplist b)
 
 void	opt_print(t_option *opt)
 {
+	t_option	*tmp;
 	const char	opt_lst[][4] = {
-		"sa", "sb", "ss", "pa", "pb",
-		"ra", "rb", "rr", "rra", "rrb", "rrr"};
+		"sa", "sb", "ss",
+		"pa", "pb",
+		"ra", "rb", "rr",
+		"rra", "rrb", "rrr"};
 
-	while (opt != NULL)
+	while (opt)
 	{
 		if (reduce(&opt, PA, PB))
 			;
@@ -82,7 +77,8 @@ void	opt_print(t_option *opt)
 			ft_putendl_fd("rrr", 1);
 		else
 			ft_putendl_fd((char *)opt_lst[opt->content], 1);
-		opt = opt->next;
+		tmp = opt->next;
+		free(opt);
+		opt = tmp;
 	}
-	opt_delete(&opt);
 }

@@ -6,33 +6,41 @@
 /*   By: sudatsu <sudatsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/11 19:04:47 by sudatsu           #+#    #+#             */
-/*   Updated: 2021/09/26 08:54:02 by sudatsu          ###   ########.fr       */
+/*   Updated: 2021/12/08 10:24:36 by sudatsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-void	safe_free(void *p)
+void	list_clear(t_list **top, t_list *current)
 {
-	free(p);
-	p = NULL;
+	t_list	*tmp;
+
+	if (*top == current)
+		*top = current->next;
+	else
+	{
+		tmp = *top;
+		while (tmp->next != current)
+			tmp = tmp->next;
+		tmp->next = current->next;
+	}
+	free(current->save);
+	free(current);
 }
 
-char	*gnl_isnewline(const char *s, int c)
+char	*isnewline(char *s)
 {
-	char	*p;
-
-	p = (char *)s;
-	while (*p)
+	while (*s)
 	{
-		if (*p == (char)c)
-			return (p);
-		p++;
+		if (*s == '\n')
+			return (s);
+		s++;
 	}
 	return (NULL);
 }
 
-size_t	gnl_strlen(const char *s)
+size_t	ft_strlen_gnl(const char *s)
 {
 	size_t	i;
 
@@ -44,41 +52,41 @@ size_t	gnl_strlen(const char *s)
 	return (i);
 }
 
-char	*gnl_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin(char const *s1, char const *s2)
 {
+	char	*top;
 	char	*newstr;
-	char	*start;
 
-	newstr = (char *)malloc(gnl_strlen(s1) + gnl_strlen(s2) + 1);
-	if (newstr == NULL)
+	newstr = malloc(ft_strlen_gnl(s1) + ft_strlen_gnl(s2) + 1);
+	if (!newstr)
 		return (NULL);
-	start = newstr;
+	top = newstr;
 	while (*s1)
 		*newstr++ = *s1++;
 	while (*s2)
 		*newstr++ = *s2++;
 	*newstr = '\0';
-	return (start);
+	return (top);
 }
 
-char	*gnl_strndup(const char *s, size_t n)
+char	*ft_strndup(const char *s, size_t n)
 {
-	size_t	slen;
 	int		len;
-	char	*copy;
-	char	*ptr;
+	char	*top;
+	char	*newstr;
+	size_t	slen;
 
-	slen = gnl_strlen(s);
+	slen = ft_strlen_gnl(s);
 	if (slen < n)
 		len = slen;
 	else
 		len = n;
-	ptr = (char *)malloc(len + 1);
-	if (!ptr)
+	newstr = malloc(len + 1);
+	if (!newstr)
 		return (NULL);
-	copy = ptr;
+	top = newstr;
 	while (len--)
-		*ptr++ = *s++;
-	*ptr = '\0';
-	return (copy);
+		*newstr++ = *s++;
+	*newstr = '\0';
+	return (top);
 }

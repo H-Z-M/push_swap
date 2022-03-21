@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_isdigit.c                                       :+:      :+:    :+:   */
+/*   libfts.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sudatsu <sudatsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/07 15:53:04 by sudatsu           #+#    #+#             */
-/*   Updated: 2022/03/16 22:34:34 by sudatsu          ###   ########.fr       */
+/*   Updated: 2022/03/21 08:52:46 by sudatsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/util.h"
+#include "common.h"
 
 int	ft_isdigit(int c)
 {
@@ -21,12 +21,29 @@ int	ft_isdigit(int c)
 
 size_t	ft_strlen(const char *s)
 {
-	size_t	idx;
+	size_t	i;
 
-	idx = 0;
-	while (s[idx] != '\0')
-		idx++;
-	return (idx);
+	i = 0;
+	while (s[i] != '\0')
+		i++;
+	return (i);
+}
+
+int	ft_strncmp(const char *s1, const char *s2, size_t len)
+{
+	unsigned char	u1;
+	unsigned char	u2;
+
+	while (len--)
+	{
+		u1 = (unsigned char)*s1++;
+		u2 = (unsigned char)*s2++;
+		if (u1 != u2)
+			return (u1 - u2);
+		if (u1 == '\0')
+			return (0);
+	}
+	return (0);
 }
 
 void	ft_putendl_fd(char *s, int fd)
@@ -35,4 +52,10 @@ void	ft_putendl_fd(char *s, int fd)
 		return ;
 	write(fd, s, ft_strlen(s));
 	write(fd, "\n", 1);
+}
+
+void	exit_error_msg(char *msg)
+{
+	ft_putendl_fd(msg, STDERR_FILENO);
+	exit(EXIT_FAILURE);
 }
